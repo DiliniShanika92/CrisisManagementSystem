@@ -5,6 +5,7 @@ using CrisisManagementSystem.API.DataLayer;
 using CrisisManagementSystem.API.Application.DTOs.Department;
 using AutoMapper;
 using CrisisManagementSystem.API.Application.IRepository;
+using CrisisManagementSystem.API.Application.DTOs.User;
 
 namespace CrisisManagementSystem.API.Controllers
 {
@@ -15,21 +16,15 @@ namespace CrisisManagementSystem.API.Controllers
         private readonly IMapper _mapper;
         private readonly IDepartmentRepository _departmentRepository;
 
-        /// <summary>
-        /// Initializes a new instance of the DepartmentsController class.
-        /// </summary>
-        /// <param name="mapper">The AutoMapper instance for object mapping.</param>
-        /// <param name="departmentRepository">The repository for managing departments.</param>
+        //since we register our dbcontext with builder.services in program.cs
+        //it geives the ability to inject almost anyfile wewant
         public DepartmentsController(IMapper mapper,IDepartmentRepository departmentRepository)
         {
             _mapper = mapper;
             _departmentRepository = departmentRepository;
         }
 
-        /// <summary>
-        /// Get a list of all departments.
-        /// </summary>
-        /// <returns>An ActionResult containing a list of department DTOs.</returns>
+        // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetDepartmentDto>>> GetDepartments()
         {
@@ -44,11 +39,7 @@ namespace CrisisManagementSystem.API.Controllers
             return Ok(getdepartments); 
         }
 
-        /// <summary>
-        /// Get a specific department by its ID.
-        /// </summary>
-        /// <param name="id">The ID of the department to retrieve.</param>
-        /// <returns>An ActionResult containing the department entity if found; otherwise, NotFound.</returns>
+        // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
@@ -66,12 +57,8 @@ namespace CrisisManagementSystem.API.Controllers
             return department;
         }
 
-        /// <summary>
-        /// Update a specific department by its ID.
-        /// </summary>
-        /// <param name="id">The ID of the department to update.</param>
-        /// <param name="updateDepartment">The data for updating the department.</param>
-        /// <returns>An IActionResult representing the outcome of the operation (NoContent, BadRequest, NotFound, etc.).</returns>
+        // PUT: api/Departments/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(int id, UpdateDepartmentDto updateDepartment)
         {
@@ -109,11 +96,8 @@ namespace CrisisManagementSystem.API.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Create a new department.
-        /// </summary>
-        /// <param name="createDepartment">The data for creating a new department.</param>
-        /// <returns>An ActionResult containing the newly created department entity or a URL to access it.</returns>
+        // POST: api/Departments
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(CreateDepartmentDto createDepartment)
         {
@@ -124,11 +108,7 @@ namespace CrisisManagementSystem.API.Controllers
             return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
         }
 
-        /// <summary>
-        /// Delete a specific department by its ID.
-        /// </summary>
-        /// <param name="id">The ID of the department to delete.</param>
-        /// <returns>An IActionResult representing the outcome of the operation (NoContent, NotFound, etc.).</returns>
+        // DELETE: api/Departments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
@@ -146,11 +126,7 @@ namespace CrisisManagementSystem.API.Controllers
 
             return NoContent();
         }
-        /// <summary>
-        /// Check if a department with the specified ID exists.
-        /// </summary>
-        /// <param name="id">The ID of the department to check for existence.</param>
-        /// <returns>A boolean indicating whether the department exists (true) or not (false).</returns>
+
         private async Task<bool> DepartmentExists(int id)
         {
             return await _departmentRepository.Exists(id);

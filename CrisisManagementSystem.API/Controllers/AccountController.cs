@@ -1,5 +1,9 @@
-﻿using CrisisManagementSystem.API.Application.DTOs.User;
+﻿using AutoMapper;
+using CrisisManagementSystem.API.Application.DTOs.Department;
+using CrisisManagementSystem.API.Application.DTOs.User;
 using CrisisManagementSystem.API.Application.IRepository;
+using CrisisManagementSystem.API.Application.Repository;
+using CrisisManagementSystem.API.DataLayer.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +15,15 @@ namespace CrisisManagementSystem.API.Controllers
     {
         private readonly IAuthManager _authManager;
         private readonly ILogger<AccountController> _logger;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public AccountController(IAuthManager authManager,ILogger<AccountController> logger)
+        public AccountController(IAuthManager authManager,ILogger<AccountController> logger, IUserRepository userRepository, IMapper mapper)
         {
             _authManager = authManager;
             this._logger = logger;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         // api/Account/register
@@ -85,6 +93,37 @@ namespace CrisisManagementSystem.API.Controllers
                 return Unauthorized();
             }
             return Ok(authResponse);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetUserDto>>> GetUsers()
+        {
+            if (await _userRepository.GetAllAsync() == null)
+            {
+                return NotFound();
+            }
+            var users = await _userRepository.GetAllAsync();
+
+            var getusers = _mapper.Map<List<GetUserDto>>(users);
+
+            return Ok(getusers);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SystemUser>> GetUser(int id)
+        {
+            if (await _userRepository.GetAllAsync() == null)
+            {
+                return NotFound();
+            }
+            var user = await _userRepository.GetAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
         }
     }
 }

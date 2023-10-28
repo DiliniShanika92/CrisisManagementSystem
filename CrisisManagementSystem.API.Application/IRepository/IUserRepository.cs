@@ -2,7 +2,7 @@
 
 namespace CrisisManagementSystem.API.Application.IRepository
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IUserRepository : IGenericRepository<SystemUser>
     {
     }
 }
